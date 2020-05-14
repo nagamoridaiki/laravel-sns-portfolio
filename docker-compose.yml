@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  nginx:
+    build: ./docker/nginx
+    container_name: "nginx"
+    ports:
+      - "8080:80"
+    restart: always
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - php-fpm
+  php-fpm:
+    build: ./docker/php-fpm
+    container_name: "php-fpm"
+    restart: always
+    volumes:
+      - ./src:/var/www
+    working_dir: /var/www
+    links:
+      - mysql
+    depends_on:
+      - mysql
+  composer:
+    image: composer:1.8
+    container_name: "composer"
+    volumes:
+      - ./src:/var/www
+    working_dir: /var/www
+  mysql:
+    image: mysql:5.7
+    container_name: "mysql"
+    ports:
+      - 3306:3306
+    restart: always
+    volumes:
+      - ./docker/mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: hoge-db
+      MYSQL_USER: hoge-user
+      MYSQL_PASSWORD: hoge-password
+      MYSQL_ROOT_PASSWORD: root
+      TZ: "Asia/Tokyo"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
