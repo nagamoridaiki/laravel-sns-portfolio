@@ -22,6 +22,8 @@ Route::prefix('articles')->name('articles.')->group(function () {
 Route::get('/tags/{name}', 'TagController@show')->name('tags.show');
 Route::prefix('users')->name('users.')->group(function () {
     Route::get('/{name}', 'UserController@show')->name('show');
+    Route::post('/{name}', 'UserController@store')->name('store');//顔写真
+
     Route::get('/{name}/likes', 'UserController@likes')->name('likes');
     Route::get('/{name}/followings', 'UserController@followings')->name('followings');
     Route::get('/{name}/followers', 'UserController@followers')->name('followers');

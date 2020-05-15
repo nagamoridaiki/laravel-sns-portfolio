@@ -87,4 +87,22 @@ class UserController extends Controller
  
         return ['name' => $name];
     }
+
+    public function store(Request $request, string $name)
+    {
+        $validatedData = $request->validate([
+            'image' => 'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $request->file('image')->store('/public/images');
+        
+        //画像パス
+        $photo_path = $request->file('image')->hashName();
+        //usersデータベースのpathに、画像までのパス情報を格納
+        $users = User::where('name', $name)->first();
+        $users->image = $photo_path;
+        $users->save();
+
+        return redirect('/')->with('flash_message', 'プロフィール画像を変更しました');
+    }
 }
