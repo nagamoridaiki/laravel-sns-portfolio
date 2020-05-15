@@ -11,7 +11,8 @@ class ArticleController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Article::class, 'article');
+        $this->authorizeResource(Article::class, 'article')
+        ->load(['user', 'likes', 'tags']); 
     }
 
     public function index()
