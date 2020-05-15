@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Skill;
+use App\Background;
 
 class UserController extends Controller
 {
@@ -12,11 +14,16 @@ class UserController extends Controller
         $user = User::where('name', $name)->first()
         ->load(['articles.user', 'articles.likes', 'articles.tags']);
 
+        $backgrounds = Background::where('user_id',$user->id)
+        ->orderBy('id', 'asc')->get();
+
+
         $articles = $user->articles->sortByDesc('created_at');
  
         return view('users.show', [
             'user' => $user,
             'articles' => $articles,
+            'backgrounds' => $backgrounds,
         ]);
     }
 
@@ -26,10 +33,13 @@ class UserController extends Controller
         ->load(['likes.user', 'likes.likes', 'likes.tags']);
  
         $articles = $user->likes->sortByDesc('created_at');
+        $backgrounds = Background::where('user_id',$user->id)->orderBy('id', 'asc')->get();
+
  
         return view('users.likes', [
             'user' => $user,
             'articles' => $articles,
+            'backgrounds' => $backgrounds,
         ]);
     }
 
@@ -39,10 +49,12 @@ class UserController extends Controller
         ->load('followings.followers');
  
         $followings = $user->followings->sortByDesc('created_at');
+        $backgrounds = Background::where('user_id',$user->id)->orderBy('id', 'asc')->get();
  
         return view('users.followings', [
             'user' => $user,
             'followings' => $followings,
+            'backgrounds' => $backgrounds,
         ]);
     }
     
@@ -52,22 +64,28 @@ class UserController extends Controller
         ->load('followers.followers');
  
         $followers = $user->followers->sortByDesc('created_at');
+        $backgrounds = Background::where('user_id',$user->id)->orderBy('id', 'asc')->get();
+
  
         return view('users.followers', [
             'user' => $user,
             'followers' => $followers,
+            'backgrounds' => $backgrounds,
         ]);
     }
 
     public function follow(Request $request, string $name)
     {
+        //$nameの部分には、フォローされる側のユーザーの名前が入っている
         $user = User::where('name', $name)->first();
- 
+
+        //$request->user()は、フォローのリクエストを行なったユーザー
         if ($user->id === $request->user()->id)
         {
             return abort('404', 'Cannot follow yourself.');
         }
  
+        //followings()メソッドは、多対多のリレーション(BelongsToManyクラスのインスタンス)が返る
         $request->user()->followings()->detach($user);
         $request->user()->followings()->attach($user);
  
