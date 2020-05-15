@@ -11,13 +11,14 @@ class ArticleController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Article::class, 'article')
-        ->load(['user', 'likes', 'tags']); 
+        $this->authorizeResource(Article::class, 'article');
+
     }
 
     public function index()
     {
-        $articles = Article::all()->sortByDesc('created_at');
+        $articles = Article::all()->sortByDesc('created_at')
+        ->load(['user', 'likes', 'tags']); 
 
         return view('articles.index', ['articles' => $articles]);
     }
