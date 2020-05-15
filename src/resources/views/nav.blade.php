@@ -24,7 +24,12 @@
   <div class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-user-circle fa-3x mr-1"></i>
+      @if(!empty(Auth::user()->image))
+          <img class='prof-photo' src="{{ asset('storage/images/'.Auth::user()->image) }}" >
+      @else
+          <i class="fas fa-user-circle fa-3x mr-1"></i>
+      @endif
+
     </a>
     <div class="dropdown-menu dropdown-menu-right dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
       
