@@ -51,4 +51,35 @@ class MessageController extends Controller
 
         return redirect('/'.$friend->name.'/message');
     }
+
+    public function list_index(){
+
+        $user_id = Auth::id();
+        //メッセージ相手ごとに直近のメッセージ情報を取得
+        $messages = DB::select("select max(id) as max,user_id from
+        (select receive_user_id as user_id , id from messages where send_user_id = ? 
+        union select send_user_id as user_id , id from messages where receive_user_id = ?)
+        as tmp group by user_id  ", [ $user_id , $user_id ]);
+
+        //ユーザーごと直近メッセージのユーザーIDとメッセージIDを格納
+        $user_array =[];
+        $message_array = [];
+        foreach($messages as $key => $message){
+            $user_array[$key]= $message->user_id;
+            $message_array[$key]= $message->max;
+        }
+        $messageall = Message::all();
+        $userall = User::orderBy('id', 'asc')->get();
+
+    
+        return view('messages.message_list', [
+            'userall'=>$userall,
+            'messageall'=>$messageall,
+            'user_array'=>$user_array,
+            'message_array'=>$message_array,
+            ]);   
+    }
+
+
 }
+

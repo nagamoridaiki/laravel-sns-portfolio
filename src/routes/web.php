@@ -34,4 +34,5 @@ Route::prefix('users')->name('users.')->group(function () {
 });
 Route::get('/{name}/message', 'MessageController@index')->name('message');
 Route::post('/{name}/message', 'MessageController@send')->name('message.send');
+Route::get('/{name}/message_list', 'MessageController@list_index')->name('message_list');
 Route::post('/article/comment', 'CommentController@create');
