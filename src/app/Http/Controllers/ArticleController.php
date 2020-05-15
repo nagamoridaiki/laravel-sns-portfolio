@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -10,20 +11,24 @@ use App\User;
 use App\Http\Requests\ArticleRequest;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class ArticleController extends Controller
 {
     public function __construct()
     {
         $this->authorizeResource(Article::class, 'article');
-
     }
 
     public function index()
     {
-        $articles = Article::all()->sortByDesc('created_at')
-        ->load(['user', 'likes', 'tags']); 
+        $tags = Tag::all()
+        ->load(['articles']);
 
-        return view('articles.index', ['articles' => $articles]);
+        $articles = Article::all()->sortByDesc('created_at')
+        ->load(['user', 'likes', 'tags']);
+
+        return view('articles.index', compact('articles','tags'));
     }
 
     public function create()
@@ -35,6 +40,7 @@ class ArticleController extends Controller
         return view('articles.create', [
             'allTagNames' => $allTagNames,
         ]);
+           
     }
 
     public function store(ArticleRequest $request, Article $article)
@@ -42,12 +48,13 @@ class ArticleController extends Controller
         $article->fill($request->all());
         $article->user_id = $request->user()->id;
         $article->save();
-
+        //ArticleRequest.phpでpassedValidationメソッドによって、コレクションとなり、eachメソッドが使える
+        //第一引数のみ$tagNameとして設定。use ($article)とあるのは、クロージャの中の処理で変数$articleを使うため
         $request->tags->each(function ($tagName) use ($article) {
+            //タグの登録にはfirstOrCreateメソッドでタグモデルの保存をする。
             $tag = Tag::firstOrCreate(['name' => $tagName]);
             $article->tags()->attach($tag);
         });
-
         return redirect()->route('articles.index');
     }
 
@@ -65,19 +72,18 @@ class ArticleController extends Controller
             'article' => $article,
             'tagNames' => $tagNames,
             'allTagNames' => $allTagNames,
-        ]);
+        ]); 
     }
 
     public function update(ArticleRequest $request, Article $article)
     {
         $article->fill($request->all())->save();
-
+        //記事更新処理でもタグの登録を行えるようにし、記事・タグの紐付けの登録と削除も行えるようにする
         $article->tags()->detach();
         $request->tags->each(function ($tagName) use ($article) {
             $tag = Tag::firstOrCreate(['name' => $tagName]);
             $article->tags()->attach($tag);
         });
-
         return redirect()->route('articles.index');
     }
 
@@ -92,6 +98,7 @@ class ArticleController extends Controller
         $comment_user_id = Auth::user()->id;
         return view('articles.show', ['article' => $article , 'comment_user_id' => $comment_user_id ]);
     }
+
 
     public function like(Request $request, Article $article)
     {
@@ -113,4 +120,5 @@ class ArticleController extends Controller
             'countLikes' => $article->count_likes,
         ];
     }
+
 }
