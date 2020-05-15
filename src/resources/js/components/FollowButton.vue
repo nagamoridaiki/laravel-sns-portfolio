@@ -3,11 +3,11 @@
     <button
       class="btn-sm shadow-none border border-primary p-2"
       :class="buttonColor"
+      @click="clickFollow" 
     >
       <i
         class="mr-1"
         :class="buttonIcon"
-        @click="clickFollow" 
       ></i>
       {{ buttonText }}
     </button>
@@ -17,17 +17,17 @@
 <script>
   export default {
     props: {
-        initialIsFollowedBy: {
-            type: Boolean,
-            default: false,
-        },
-        authorized: {
-            type: Boolean,
-            default: false,
-        },
-        endpoint: {
-            type: String,
-        },
+      initialIsFollowedBy: {
+        type: Boolean,
+        default: false,
+      },
+      authorized: {
+        type: Boolean,
+        default: false,
+      },
+      endpoint: {
+        type: String,
+      },
     },
     data() {
       return {
@@ -57,7 +57,6 @@
           alert('フォロー機能はログイン中のみ使用できます')
           return
         }
-
         this.isFollowedBy
           ? this.unfollow()
           : this.follow()
