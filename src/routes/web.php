@@ -32,4 +32,6 @@ Route::prefix('users')->name('users.')->group(function () {
         Route::delete('/{name}/follow', 'UserController@unfollow')->name('unfollow');
     });
 });
+Route::get('/{name}/message', 'MessageController@index')->name('message');
+Route::post('/{name}/message', 'MessageController@send')->name('message.send');
 Route::post('/article/comment', 'CommentController@create');

@@ -52,6 +52,11 @@
         <a href="{{ route('users.followers', ['name' => $user->name]) }}" class="text-muted">
             {{ $user->count_followers }} フォロワー
         </a>
+        @if( Auth::id() !== $user->id )
+          <a href="{{ route('message', ['name' => $user->name]) }}" class="text-muted">
+            メッセージ
+          </a>
+        @endif
     </div>
   </div>
 </div>
