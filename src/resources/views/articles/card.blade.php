@@ -82,6 +82,14 @@
             endpoint="{{ route('articles.like', ['article' => $article]) }}"
         >
         </article-like>
+        <!--ここにコメント数を表示させる-->
+        <a class="text-dark" href="{{ route('articles.show', ['article' => $article]) }}">
+          @if($article->count_comment > 0)
+            <span>コメント数 {{ $article->count_comment }}件</span>
+          @else
+            <span>コメントを書く</span>
+          @endif
+        </a>
     </div>
   </div>
   @foreach($article->tags as $tag)
