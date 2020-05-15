@@ -25,14 +25,12 @@
     <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
       @if(!empty(Auth::user()->image))
-          <img class='prof-photo' src="{{ asset('storage/images/'.Auth::user()->image) }}" >
+            <img class='prof-photo' src="{{ asset('storage/images/'.Auth::user()->image) }}" >
       @else
-          <i class="fas fa-user-circle fa-3x mr-1"></i>
+            <i class="fas fa-user-circle fa-3x mr-1"></i>
       @endif
-
     </a>
     <div class="dropdown-menu dropdown-menu-right dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
-      
       <button class="dropdown-item" type="button"
               onclick="location.href='{{ route("articles.index") }}'">
         トップ
@@ -44,6 +42,16 @@
       </button>
       <div class="dropdown-divider"></div>
       <button class="dropdown-item" type="button"
+              onclick="location.href='{{ route("users.edit", ["name" => Auth::user()->name]) }}'">
+        基本プロフィールを編集
+      </button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item" type="button"
+              onclick="location.href='{{ route("background") }}'">
+        経歴・実績を編集
+      </button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item" type="button"
               onclick="location.href='{{ route("message_list", ["name" => Auth::user()->name]) }}'">
         メッセージ一覧
       </button>
@@ -51,7 +59,6 @@
       <button form="logout-button" class="dropdown-item" type="submit">
         ログアウト
       </button>
-      
     </div>
   </div>
     <form id="logout-button" method="POST" action="{{ route('logout') }}">
