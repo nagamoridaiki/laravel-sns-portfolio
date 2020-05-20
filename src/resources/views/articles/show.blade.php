@@ -20,6 +20,7 @@
       </p>
     @endforeach
 
+    @auth
     <!--ここにコメント書くフォームを作る-->
     <form method="POST" action="/article/comment">
       @csrf
@@ -31,5 +32,7 @@
       </div>
       <button type="submit" class="btn blue-gradient btn-block">コメントする</button>
     </form>
+    @endauth
   </div>
+
 @endsection

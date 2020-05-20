@@ -95,7 +95,14 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
-        $comment_user_id = Auth::user()->id;
+        
+        if(Auth::user()){
+            $comment_user_id = Auth::user()->id;
+        }
+        $comment_user_id = 0;
+        
+
+
         return view('articles.show', ['article' => $article , 'comment_user_id' => $comment_user_id ]);
     }
 
