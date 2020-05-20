@@ -26,6 +26,7 @@
         aria-haspopup="true" aria-expanded="false">
       @if(!empty(Auth::user()->image))
             <img class='prof-photo' src="{{ asset('storage/images/'.Auth::user()->image) }}" >
+            
       @else
             <i class="fas fa-user-circle fa-3x mr-1"></i>
       @endif

@@ -10,16 +10,19 @@
             {{ session('flash_message') }}
         </div>
     @endif
-    <div class="row">
-      <div class="col-2 col-xs-12">
-        <div class="sidebar_fixed">
-          @include('articles.tags')
+    <div class="container">
+      <div class="row">
+        <div class="col-2 col-xs-12">
+          <div class="sidebar_fixed">
+            @include('articles.tags')
+          </div>
         </div>
-      </div>
-      <div class="col-9 col-xs-12">
-        @foreach($articles as $article)
-            @include('articles.card')
-        @endforeach
+        <div class="col-8 col-xs-12">
+        <div class="font-weight-bold">記事一覧</div>
+          @foreach($articles as $article)
+              @include('articles.list')
+          @endforeach
+        </div>
       </div>
     </div>
 
