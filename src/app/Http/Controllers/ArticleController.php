@@ -98,9 +98,9 @@ class ArticleController extends Controller
         
         if(Auth::user()){
             $comment_user_id = Auth::user()->id;
-        }
+        }else{
         $comment_user_id = 0;
-        
+        }
 
 
         return view('articles.show', ['article' => $article , 'comment_user_id' => $comment_user_id ]);
