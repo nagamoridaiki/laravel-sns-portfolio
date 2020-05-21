@@ -1,7 +1,23 @@
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark info-color">
 
   <a class="navbar-brand" href="/"><i class="fas fa-chalkboard-teacher"></i> 掲示板SNS</a>
- 
+  
+  
+  <ul class="navbar-nav ml-auto">
+    @guest
+    <li class="nav-item">
+      <form method="POST" action="{{ route('login') }}">
+        @csrf
+        <input type="hidden"name="email" required value="aaa01@abc.co.jp">
+        <input type="hidden"name="password" required value="ZAQ!2wsxCDE#4r">
+        <button class="btn-block info-color" 
+          style="color: white; border: hidden;" 
+          type="submit">ゲストユーザーとしてログイン
+        </button>
+      </form>
+    </li>
+    @endguest
+  </ul>
 
   <ul class="navbar-nav ml-auto">
     @guest
@@ -68,3 +84,8 @@
     @endauth
   
 </nav>
+
+<style>
+.guest_login{
+}
+</style>
