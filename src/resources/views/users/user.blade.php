@@ -19,11 +19,27 @@
         </form>
         </div>
       @else
+      <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
         @if(!empty($user->image))
               <img class='prof-photo' src="{{ asset('storage/images/'.$user->image) }}" >
         @else
               <i class="fas fa-user-circle fa-3x mr-1"></i>
         @endif
+      </a>
+      <div class="dropdown-menu dropdown-menu-right dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+        @auth
+        <button class="dropdown-item " type="button"
+                onclick="location.href='{{ route('message', ['name' => $user->name]) }}'">
+          チャットする
+        </button>
+        @endauth
+        @guest
+        <div class="dropdown-item " type="button">
+          {{ $user->name }}さんとチャットするにはログインが必要です
+        </div>
+        @endguest
+      </div>
       @endif
 
       @if( Auth::id() !== $user->id )
@@ -37,9 +53,7 @@
       @endif
     </div>
     <h2 class="h5 card-title m-0">
-      <a href="{{ route('users.show', ['name' => $user->name]) }}" class="text-dark">
         {{ $user->name }}
-      </a>
     </h2>
   </div>
   @if(isset($user->self_introduction))
@@ -78,11 +92,13 @@
       <a href="{{ route('users.followers', ['name' => $user->name]) }}" class="text-muted">
         {{ $user->count_followers }} フォロワー
       </a>
-      @if( Auth::id() !== $user->id )
-        <a href="{{ route('message', ['name' => $user->name]) }}" class="text-muted">
-          メッセージ
-        </a>
-      @endif
+      @auth
+        @if( Auth::id() !== $user->id )
+          <a href="{{ route('message', ['name' => $user->name]) }}" class="text-muted">
+            チャットする
+          </a>
+        @endif
+      @endauth
     </div>
   </div>
 </div>

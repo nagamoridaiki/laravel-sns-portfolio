@@ -1,13 +1,28 @@
 <div class="card" >
   <div class="card-body">
     <h4 class="card-title">
-    <a href="{{ route('users.show', ['name' => $article->user->name]) }}" class="text-dark">
+    
+    <div class=" dropdown">
+      <a class="" id="navbarDropdownMenuLink" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
         @if(!empty($article->user->image))
             <img class='prof-photo' src="{{ asset('storage/images/'.$article->user->image) }}" >
         @else
             <i class="fas fa-user-circle fa-3x mr-1"></i>
         @endif
-    </a> 
+      </a>
+      <div class="dropdown-menu dropdown-menu-right dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+        <button class="dropdown-item" type="button"
+                onclick="location.href='{{ route("users.show", ["name" => $article->user->name]) }}'">
+          プロフィール
+        </button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item" type="button"
+              onclick="location.href='{{ route('message', ['name' => $article->user->name]) }}'">
+              チャットする
+        </button>
+      </div>
+
     <a class="text-dark" href="{{ route('articles.show', ['article' => $article]) }}">
         {{ $article->title }}
     </a>
@@ -57,9 +72,22 @@
 
     </h4>
     <h6 class="card-subtitle mb-2 text-muted">
-        <a href="{{ route('users.show', ['name' => $article->user->name]) }}" class="text-dark">
+        <div class=" dropdown">
+          <a class="" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
             {{ $article->user->name }}
-        </a>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+            <button class="dropdown-item" type="button"
+                    onclick="location.href='{{ route("users.show", ["name" => $article->user->name]) }}'">
+              プロフィール
+            </button>
+          <div class="dropdown-divider"></div>
+            <button class="dropdown-item" type="button"
+                  onclick="location.href='{{ route('message', ['name' => $article->user->name]) }}'">
+            チャットする
+          </button>
+        </div>
         <span class="font-weight-lighter" style="float: right;"><i class="fas fa-clock"></i> {{ $article->created_at->format('Y/m/d H:i') }}</span>
         <span style="float: right; margin-right: 10px;">
         @foreach($article->tags as $tag)
