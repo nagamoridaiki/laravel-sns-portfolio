@@ -14,15 +14,9 @@ class MessageController extends Controller
     {
         //メッセージ相手
         $friend = User::where('name', $name)->first();
-    
         //自分
         $user = $request->user();
 
-        $param = [
-            'send' => $user->id,
-            'recieve' => $friend->id,
-          ];
-        
         $query = Message::where('send_user_id' , $user->id)->where('receive_user_id' , $friend->id);
         $query->orWhere(function($query) use($user , $friend){
             $query->where('send_user_id' , $friend->id);
@@ -30,7 +24,34 @@ class MessageController extends Controller
         });
         $messages = $query->get();
 
-        return view('messages.chat',compact('messages','friend','user'));
+    //メッセージ一覧機能
+        $user_id = Auth::id();
+        //メッセージ相手ごとに直近のメッセージ情報を取得
+        $messages_sql = DB::select("select max(id) as max,user_id from
+        (select receive_user_id as user_id , id from messages where send_user_id = ? 
+        union select send_user_id as user_id , id from messages where receive_user_id = ?)
+        as tmp group by user_id  ", [ $user_id , $user_id ]);
+
+        //ユーザーごと直近メッセージのユーザーIDとメッセージIDを格納
+        $user_array =[];
+        $message_array = [];
+        foreach($messages_sql as $key => $message){
+            $user_array[$key]= $message->user_id;
+            $message_array[$key]= $message->max;
+        }
+        $messageall = Message::all();
+        $userall = User::orderBy('id', 'asc')->get();
+    //メッセージ一覧機能ここまで
+
+        return view('messages.chat',compact(
+            'messages',
+            'friend',
+            'user',
+            'userall',
+            'messageall',
+            'user_array',
+            'message_array',
+        ));
     }
 
     public function send(Request $request , string $name){
@@ -56,7 +77,7 @@ class MessageController extends Controller
 
         $user_id = Auth::id();
         //メッセージ相手ごとに直近のメッセージ情報を取得
-        $messages = DB::select("select max(id) as max,user_id from
+        $messages_sql = DB::select("select max(id) as max,user_id from
         (select receive_user_id as user_id , id from messages where send_user_id = ? 
         union select send_user_id as user_id , id from messages where receive_user_id = ?)
         as tmp group by user_id  ", [ $user_id , $user_id ]);
@@ -64,7 +85,7 @@ class MessageController extends Controller
         //ユーザーごと直近メッセージのユーザーIDとメッセージIDを格納
         $user_array =[];
         $message_array = [];
-        foreach($messages as $key => $message){
+        foreach($messages_sql as $key => $message){
             $user_array[$key]= $message->user_id;
             $message_array[$key]= $message->max;
         }
