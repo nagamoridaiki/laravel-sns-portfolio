@@ -16,11 +16,13 @@
                 onclick="location.href='{{ route("users.show", ["name" => $article->user->name]) }}'">
           プロフィール
         </button>
+        @auth
         <div class="dropdown-divider"></div>
         <button class="dropdown-item" type="button"
               onclick="location.href='{{ route('message', ['name' => $article->user->name]) }}'">
               チャットする
         </button>
+        @endauth
       </div>
 
     <a class="text-dark" href="{{ route('articles.show', ['article' => $article]) }}">

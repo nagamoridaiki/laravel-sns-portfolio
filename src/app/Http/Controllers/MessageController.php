@@ -7,6 +7,7 @@ use App\User;
 use App\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\MessageRequest;
 
 class MessageController extends Controller
 {
@@ -54,7 +55,7 @@ class MessageController extends Controller
         ));
     }
 
-    public function send(Request $request , string $name){
+    public function send(MessageRequest $request , string $name){
 
         //メッセージ相手
         $friend = User::where('name', $name)->first();
