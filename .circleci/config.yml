@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 jobs:
   build:
     docker:
@@ -17,8 +17,41 @@ jobs:
 
     - run: sudo apt update
     - run: sudo docker-php-ext-install zip
+    - run: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - run: php -r "if (hash_file('sha384', 'composer-setup.php') === 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    - run: php composer-setup.php
+    - run: php -r "unlink('composer-setup.php');"
+    - run: docker-compose run composer  install -n --prefer-dist
     - run:
-        name: php test
-        command: vendor/bin/phpunit
+        name: install-npm
+        command: npm install
 
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "composer.json" }}
+        - v1-dependencies-
+    - run: docker-compose run composer  install -n --prefer-dist
+    - save_cache:
+        key: v1-dependencies-{{ checksum "composer.json" }}
+        paths:
+        - ./vendor
+    - restore_cache:
+        keys:
+        - node-v1-{{ checksum "package.json" }}
+        - node-v1-
+    - run: yarn install
+    - save_cache:
+        key: node-v1-{{ checksum "package.json" }}
+        paths:
+        - node_modules
 
+    - run: touch storage/testing.sqlite
+    - run: php artisan migrate --env=testing --database=sqlite_testing --force
+    - run: ./vendor/bin/codecept build
+    - run: ./vendor/bin/codecept run
+    
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build
