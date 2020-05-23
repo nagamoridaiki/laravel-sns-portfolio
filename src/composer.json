@@ -26,6 +26,14 @@
         "nunomaduro/collision": "^4.1",
         "phpunit/phpunit": "^8.5"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packagist.org"
+        },
+        { "packagist": false }
+    ],
+    
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
