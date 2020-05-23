@@ -22,7 +22,6 @@ jobs:
     - run: php composer-setup.php
     - run: php -r "unlink('composer-setup.php');"
     - run: npm install
-    - run: npm run dev
     - run:
         name: php test
         command: vendor/bin/phpunit
